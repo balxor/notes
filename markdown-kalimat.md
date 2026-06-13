@@ -16,9 +16,13 @@ Instruksi gaya untuk generasi teks artikel, proposal, dan presentasi. Tempel seb
 - Jangan pakai pola "bukan X, bukan Y, bukan Z".
 - Jangan pakai pola "bukan sekadar ...".
 - Jangan pakai pola "bukan A, melainkan B".
+- Jangan pakai negasi–afirmasi: menyangkal kandidat salah lalu menyebut yang benar, termasuk varian titik koma. Contoh terlarang: "Vektornya bukan kode; vektornya proses kognitif." / "Bukan mengajarkan daftar; mengajarkan pola." Nyatakan langsung yang benar tanpa menyangkal lawannya.
+- Jangan pakai qualifier negasi di ekor kalimat untuk kontras. Contoh terlarang: "..., bukan yang diuji." / "..., bukan tidak sopan."
+- Jangan pakai pasangan kalimat antitetis simetris. Contoh terlarang: "X menurunkan skeptisisme. Y menaikkannya." Hindari kalimat kedua yang mencerminkan kalimat pertama untuk efek ritme.
 - Jangan pakai metafora.
 - Jangan pakai personifikasi.
 - Jangan pakai pengandaian ("bayangkan ...", "seolah-olah ...").
+- Batasi em-dash apositif. Maksimal satu sisipan penjelas per paragraf; sisanya pecah jadi kalimat atau pakai koma.
 
 ## Larangan retorika
 
@@ -26,6 +30,9 @@ Instruksi gaya untuk generasi teks artikel, proposal, dan presentasi. Tempel seb
 - Jangan pakai framing emosional atau penggiringan opini.
 - Jangan tambahkan paragraf pembuka penghias; langsung ke isi.
 - Nyatakan fakta sekali, tanpa pengulangan untuk efek.
+- Jangan tutup paragraf atau section dengan aforisme atau generalisasi "abadi". Contoh terlarang: "...karena pola itu konstan meski teknik berubah." Akhiri di fakta terakhir, tanpa menarik pelajaran.
+- Jangan pakai kalimat scaffolding yang mengumumkan struktur, bukan membawa isi. Contoh terlarang: "Setiap fase punya literatur tersendiri." / "Setiap mekanisme punya counter spesifik." Langsung ke isi fase atau counter-nya.
+- Jangan pakai colon punchline yang merangkum kalimat sebelumnya. Contoh terlarang: "Mekanismenya sama: menurunkan biaya kognitif." Colon hanya untuk daftar atau aposisi faktual.
 
 ## Istilah teknis
 
