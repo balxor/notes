@@ -38,7 +38,3 @@ Instruksi gaya untuk generasi teks artikel, proposal, dan presentasi. Tempel seb
 
 - Jangan terjemahkan istilah teknis ke bahasa Indonesia. Pertahankan bentuk aslinya.
 - Contoh yang harus tetap dalam bahasa Inggris: *roadmap* (bukan "peta jalan"), *attack surface* (bukan "permukaan serangan"), *payload*, *threat model*, *pipeline*, dan sejenisnya.
-
-## Prinsip umum
-
-Prosa terse, langsung, hubungan mekanisme–konsekuensi. Setiap kalimat membawa informasi baru. Tidak ada pemanasan, tidak ada penutup yang mengulang.
