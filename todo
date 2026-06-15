@@ -1,0 +1,11 @@
+Jangan buang waktu unpack gpHackerProc.dll. Proteksinya tinggi dan akan memakan waktu lama. Pendekatan praktis:
+
+Patch C:\RO_SEA\RO_SEAGame\GameAssembly.dll (native code dari dump.cs yang sudah diketahui offsetnya):
+SecurityService.IsGPDllExist() (0x160A710) → xor al,al; ret (return false)
+SecurityService.DisableGP() (0x160A580) → ret (NOP)
+GNAMonitorBegin (0x1F1A790) → ret
+GNAMonitorEnd (0x1F1A840) → ret
+GPSetUserInfo (0x160A5F0) → ret
+Test pertama: rename/delete gpHackerProc.dll, gpShell.dll, gp.dll — jalankan game, lihat apakah crash
+Jika crash: patch GameAssembly.dll dulu, baru coba delete DLL anti-cheat
+Runtime dump gpHackerProc.dll via x64dbg/Scylla hanya jika diperlukan untuk RE lebih lanjut
