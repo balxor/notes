@@ -50,7 +50,6 @@ graph TD
 ```
 
 <details>
-<summary>Text version (for accessibility / plain-text viewers)</summary>
 
 ```
 MALWARE (standard infostealer)
