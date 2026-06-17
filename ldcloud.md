@@ -77,7 +77,9 @@ Reads: %APPDATA%\ldcloud\ + %LOCALAPPDATA%\LDCloud\
 
 ### Finding #1 [CRITICAL] - OBS Cloud HMAC Signatures Exposed in Log Files
 
+```
 **CVSS:** 8.6 | **CVSS Vector:** AV:L/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H
+```
 
 ### What the Malware Sees
 
