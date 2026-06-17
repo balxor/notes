@@ -1,5 +1,5 @@
-# Bug Bounty Report - LDCloud v3.4.0
-## Defense-in-Depth Failures Enabling Malware-to-Cloud-Takeover  
+### Bug Bounty Report - LDCloud v3.4.0
+Defense-in-Depth Failures Enabling Malware-to-Cloud-Takeover  
 
 Author: Kenshin Himura
 
