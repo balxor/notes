@@ -134,7 +134,7 @@ App version: obs-sdk-c-3.23.3
 - **Account Mapping:** Access Key directly maps to tenant `2300231219705678`
 - **Self-Perpetuating:** Logs containing credentials are uploaded to the same bucket they authorize
 
-### ⚡ SELF-PERPETUATING CREDENTIAL LEAK
+### SELF-PERPETUATING CREDENTIAL LEAK
 
 The app automatically uploads `dump-log-*.zip` to OBS bucket `ld-cloud-xjp`:
 
@@ -636,9 +636,9 @@ All scripts require: Windows 10+, PowerShell 5.1+. The mitmproxy PoC additionall
 
 ## Disclosure
 
-**Company:** HONGKONG LDCLOUD INTERNATIONAL CO. LIMITED (Reg: 73481219)
-**Website:** https://www.ldcloud.net
-**Contact:** business@ldcloud.net | WhatsApp: +8613318793258
+**Company:** HONGKONG LDCLOUD INTERNATIONAL CO. LIMITED (Reg: 73481219) 
+**Website:** https://www.ldcloud.net 
+**Contact:** business@ldcloud.net | WhatsApp: +8613318793258 
 
 ## Disclosure Timeline
 - **2026-06-18 02:13 UTC:** Initial discovery - debug port + Chromium flags
