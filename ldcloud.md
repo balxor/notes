@@ -632,18 +632,21 @@ All scripts require: Windows 10+, PowerShell 5.1+. The mitmproxy PoC additionall
 ## Disclosure
 
 ```
-**Company:** HONGKONG LDCLOUD INTERNATIONAL CO. LIMITED (Reg: 73481219)  
-**Website:** https://www.ldcloud.net  
-**Contact:** business@ldcloud.net | WhatsApp: +8613318793258  
+Company: HONGKONG LDCLOUD INTERNATIONAL CO. LIMITED (Reg: 73481219)  
+Website: https://www.ldcloud.net  
+Contact: business@ldcloud.net | WhatsApp: +8613318793258  
 ```
 
 ## Disclosure Timeline
-- **2026-06-18 02:13 UTC:** Initial discovery - debug port + Chromium flags
-- **2026-06-18 02:30 UTC:** OBS credential extraction from log files
-- **2026-06-18 02:45 UTC:** Token extraction from SQLite config.db
-- **2026-06-18 03:00 UTC:** Account takeover verified - device list via API (HTTP 200)
-- **2026-06-18 03:15 UTC:** Destructive action verified - device 6315809 rebooted
-- **2026-06-18 03:47 UTC:** Device modification verified - device 6312247 note changed
-- **2026-06-18 04:00 UTC:** Certificate validation bypass verified (badssl.com tests)
-- **2026-06-18 04:30 UTC:** Update supply chain MITM verified - fake dialog "99.0.0-PWNED" appeared
-- **2026-06-18:** Report finalized with all 8 findings + PoC scripts
+
+```
+- 2026-06-18 02:13 UTC: Initial discovery - debug port + Chromium flags
+- 2026-06-18 02:30 UTC: OBS credential extraction from log files
+- 2026-06-18 02:45 UTC: Token extraction from SQLite config.db
+- 2026-06-18 03:00 UTC: Account takeover verified - device list via API (HTTP 200)
+- 2026-06-18 03:15 UTC: Destructive action verified - device 6315809 rebooted
+- 2026-06-18 03:47 UTC: Device modification verified - device 6312247 note changed
+- 2026-06-18 04:00 UTC: Certificate validation bypass verified (badssl.com tests)
+- 2026-06-18 04:30 UTC: Update supply chain MITM verified - fake dialog "99.0.0-PWNED" appeared
+- 2026-06-18: Report finalized with all 8 findings + PoC scripts
+```
