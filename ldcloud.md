@@ -49,8 +49,6 @@ graph TD
     style C1 fill:#44aa44,color:#fff
 ```
 
-<details>
-
 ```
 MALWARE (standard infostealer)
 Reads: %APPDATA%\ldcloud\ + %LOCALAPPDATA%\LDCloud\
@@ -74,8 +72,6 @@ Reads: %APPDATA%\ldcloud\ + %LOCALAPPDATA%\LDCloud\
 |
 +--> IMPACT: Cloud takeover + Account takeover + RCE + Malware distribution
 ```
-
-</details>
 
 ---
 
