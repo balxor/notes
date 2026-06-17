@@ -631,9 +631,11 @@ All scripts require: Windows 10+, PowerShell 5.1+. The mitmproxy PoC additionall
 
 ## Disclosure
 
+```
 **Company:** HONGKONG LDCLOUD INTERNATIONAL CO. LIMITED (Reg: 73481219)  
 **Website:** https://www.ldcloud.net  
 **Contact:** business@ldcloud.net | WhatsApp: +8613318793258  
+```
 
 ## Disclosure Timeline
 - **2026-06-18 02:13 UTC:** Initial discovery - debug port + Chromium flags
