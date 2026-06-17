@@ -124,7 +124,7 @@ Object keys: pc-client-log/2300231219705678/dump-log-*.zip
 App version: obs-sdk-c-3.23.3
 ```
 
-#### Impact
+### Impact
 - **Credential Exposure:** 7 unique Access Key IDs exposed with valid HMAC signatures
 - **Cloud Storage Exposure:** Bucket name, endpoint, tenant ID all visible in logs
 - **Data Exfiltration:** Dump-logs in bucket contain user activity data; attacker with bucket access can read all
@@ -211,7 +211,7 @@ Gap:         49 major Chromium releases behind current stable (~140+)
 
 **With `--no-sandbox`, every single Chromium CVE becomes a direct RCE vector at the LDCloud process privilege level.**
 
-#### Impact
+### Impact
 - **Malware -> RCE:** Any malware that lures user to a malicious page in LDCloud's embedded browser gets RCE with user privileges
 - **MITM Attack:** `--ignore-certificate-errors` allows transparent traffic interception
 - **Persistence:** Exploit chain can survive reboots via the same CEF configuration
