@@ -391,7 +391,7 @@ The stolen token grants **full authenticated access** to the LDCloud API - ident
 
 ### Destructive Action PoC (VERIFIED - Device Rebooted)
 
-Beyond reading data, the stolen token can perform **destructive operations**. Device 6315809 (VIT) was rebooted via the API:
+Beyond reading data, the stolen token can perform **destructive operations**. Device 6***809 (VIT) was rebooted via the API:
 
 ```bash
 curl -X POST "https://ldq.ldcloud.net/api/rest/cph/device/batch-reboot" \
@@ -430,8 +430,8 @@ The note was then restored to original, confirming full read/write control.
 | Action | Endpoint | Device | Result |
 |--------|----------|--------|--------|
 | List all devices | `/cph/device/my-device` | All 3 | Full inventory returned |
-| Reboot device | `/cph/device/batch-reboot` | 6315809 (VIT) | Status: "重启中" |
-| Modify device note | `/cph/device/batch-edit` | 6312247 (DEX) | Note changed & restored |
+| Reboot device | `/cph/device/batch-reboot` | 6***809 (VIT) | Status: "重启中" |
+| Modify device note | `/cph/device/batch-edit` | 6***247 (DEX) | Note changed & restored |
 | Factory reset | `/cph/device/batch-reset` | (not executed - destructive) | Available |
 | Transfer ownership | `/cph/device/transfer` | (not executed) | Available |
 
