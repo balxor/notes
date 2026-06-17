@@ -88,7 +88,7 @@ C:\LDCloud\logs\obs-sdk-c.run.log    (327,304 bytes, world-readable)
 
 **No malware needed.** These credentials are also uploaded to a cloud bucket (`ld-cloud-xjp`) as part of automated dump-log zips. Any attacker who gains bucket access (via previous credential leak, insider threat, or cloud misconfiguration) can read ALL historical and future credentials.
 
-### The Double-Logging Bug
+#### The Double-Logging Bug
 
 The Huawei OBS C SDK (`obs-sdk-c-3.23.3`) has a critical logging defect: it pretends to mask credentials, then immediately dumps them unmasked:
 
