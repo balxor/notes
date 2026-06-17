@@ -22,30 +22,61 @@ LDCloud suffers from **eight layered security failures** that collectively turn 
 
 ## Attack Chain Visualization
 
+```mermaid
+graph TD
+    MALWARE["MALWARE<br/>(standard infostealer)"]
+    
+    MALWARE --> OBS["obs-sdk-c.run.log<br/>7 OBS Keys + HMAC sigs"]
+    MALWARE --> DB["config.db (SQLite)<br/>Session token + UID"]
+    MALWARE --> DEV["localhost:8088<br/>DevTools Protocol"]
+    MALWARE --> CEF["Chromium 91 EOL<br/>+ no-sandbox<br/>+ ignore-cert-errors"]
+    MALWARE --> SSL["OpenSSL 1.0.2o + 1.1.1t<br/>Both EOL"]
+    MALWARE --> VC["VConsole<br/>in production"]
+    
+    OBS --> O1["Self-perpetuating leak:<br/>logs zipped + uploaded<br/>to same bucket"]
+    DB --> D1["VERIFIED: HTTP 200<br/>API impersonation<br/>list + reboot + modify"]
+    DEV --> D2["Dump all app state,<br/>localStorage tokens,<br/>modify Pinia store"]
+    CEF --> C1["RCE via known CVEs<br/>+ MITM update API<br/>VERIFIED: fake dialog<br/>'99.0.0-PWNED'"]
+    
+    O1 --> IMPACT["IMPACT:<br/>Cloud Takeover<br/>Account Takeover<br/>RCE<br/>Malware Distribution"]
+    D1 --> IMPACT
+    D2 --> IMPACT
+    C1 --> IMPACT
+
+    style MALWARE fill:#ff4444,color:#fff
+    style IMPACT fill:#ff4444,color:#fff
+    style D1 fill:#44aa44,color:#fff
+    style C1 fill:#44aa44,color:#fff
 ```
-┌──────────────────────────────────────────────────────────────────────────────┐
-│                        MALWARE (standard infostealer)                         │
-│        Reads: %APPDATA%\ldcloud\  +  %LOCALAPPDATA%\LDCloud\                 │
-└───────────────┬──────────────────────────────────────────────────────────────┘
-                │
-    ┌───────────┼───────────┬──────────────┬───────────────┬──────────────┬─────────────┐
-    ▼           ▼           ▼              ▼               ▼              ▼             ▼
-┌───────┐ ┌────────┐ ┌──────────┐ ┌──────────────┐ ┌──────────┐ ┌──────────┐ ┌──────────────┐
-│OBS    │ │config  │ │DevTools  │ │Chromium 91   │ │Update    │ │OpenSSL   │ │VConsole      │
-│keys   │ │.db     │ │:8088     │ │no-sandbox    │ │Supply    │ │1.0.2o    │ │in production │
-│in log │ │token   │ │full read │ │ign-cert-err  │ │Chain     │ │1.1.1t    │ │              │
-└───┬───┘ └───┬────┘ └────┬─────┘ └──────┬───────┘ └────┬─────┘ └────┬─────┘ └──────────────┘
-    │         │            │              │              │            │
-    ▼         ▼            ▼              ▼              ▼            ▼
-┌──────────────────────────────────────────────────────────────────────────────┐
-│                          ESCALATED IMPACT                                     │
-├──────────────────────────────────────────────────────────────────────────────┤
-│ CLOUD TAKEOVER  │ ACCOUNT TAKEOVER ✅ │ PRIV. ESCALATION │ MALWARE DIST.  │ DATA LEAK│
-│ OBS bucket full │ VERIFIED HTTP 200   │ User → RCE       │ Update MITM    │ All      │
-│ access + creds  │ stolen token → API  │ via Chromium CVE │ fake dialog ✅ │ devices  │
-│ self-perpetuating│ reboot + modify    │                  │ 99.0.0-PWNED   │          │
-└──────────────────────────────────────────────────────────────────────────────┘
+
+<details>
+<summary>Text version (for accessibility / plain-text viewers)</summary>
+
 ```
+MALWARE (standard infostealer)
+Reads: %APPDATA%\ldcloud\ + %LOCALAPPDATA%\LDCloud\
+|
+|--> obs-sdk-c.run.log  --> 7 OBS Access Keys + HMAC signatures exposed
+|     \-> Self-perpetuating: logs zipped + uploaded to same bucket
+|
+|--> config.db (SQLite)  --> Session token + UID extracted
+|     \-> VERIFIED: HTTP 200 API impersonation (list + reboot + modify)
+|
+|--> localhost:8088      --> DevTools Protocol access
+|     \-> Dump all app state, localStorage tokens, modify Pinia store
+|
+|--> Chromium 91 EOL     --> RCE via known CVEs (CVE-2021-30551 etc.)
+|     + --no-sandbox     --> No sandbox protection
+|     + --ignore-cert    --> MITM: intercept update API response
+|           \-> VERIFIED: Fake update dialog "99.0.0-PWNED" appeared
+|
+|--> OpenSSL 1.0.2o EOL --> Known crypto vulnerabilities (EOL 2019)
+|--> OpenSSL 1.1.1t EOL --> Unpatched TLS CVEs (EOL 2023)
+|
++--> IMPACT: Cloud takeover + Account takeover + RCE + Malware distribution
+```
+
+</details>
 
 ---
 
