@@ -1,5 +1,0 @@
-Opsi selanjutnya
-Verifikasi bypass — buka Process Explorer, cek apakah thread gpHackerProc masih spawn. Cek juga network connections ke server ByteDance.
-Block network — blok DNS/hosts report server GP agar tidak ada data keluar sama sekali.
-Lanjut ke RE GameAssembly.dll — cari fungsi game logic untuk hack (damage, speed, item drop, dll).
-Lanjut ke RE Network Protocol — analisis packet structure (protobuf) untuk automation/bot.
